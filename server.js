@@ -4,8 +4,12 @@ var app = express();
 var fs = require('fs');
 var bodyParser = require('body-parser');
 var mysql = require('mysql');
+var engines = require('consolidate');
 
 app.use(bodyParser.urlencoded({ extended: false }))
+app.use(express.static('public'));
+app.engine('html', engines.mustache);
+app.set('view engine', 'html');
 
 var dbConnection = mysql.createConnection({
     host    :'localhost',
@@ -28,6 +32,26 @@ app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
 });
 
+app.post('/register', function(req, res) {
+  var input_id = req.body.user_id;
+  var input_pw = req.body.user_pw;
+  var input_name = req.body.user_name;
+  var input_email = req.body.user_email;
+
+  console.log(input_id, input_pw, input_name, input_email);
+  dbConnection.query('INSERT INTO member_info(`user_id`, `user_password`, `user_name`, `user_email`) VALUES (?, ?, ?, ?)',
+  [input_id,input_pw,input_name,input_email], function(err,rows){
+    if(err){ //질의에 오류 발생
+      console.log('DB error');
+      console.log(err);
+    }
+    else{
+      console.log('register success');
+      res.send('<script>alert("가입 되었습니다");location.href="/";</script>');
+    }
+  });
+});
+
 app.post('/', function(req, res) {
   var input_id = req.body.user_id;
   var input_pw = req.body.user_pw;
@@ -43,21 +67,31 @@ app.post('/', function(req, res) {
 
       if(cnt == 1){//로그인이 유효한 경우
         console.log('login succes');
-        res.send('seccess');
+        res.send('<script>alert("로그인 되었습니다");</script>');
       }
       else {//로그인이 유효하지 않은 경우
         console.log('fail to login');
-        res.send('fail');
-        //res.redirect('/');
+        res.send('<script>alert("로그인 실패");history.back(); </script>');
       }
     }
   });
-
   console.log(input_id, input_pw);
 });
 
 app.get('/',function(req, res) {
-  fs.readFile('view_login/index.html', function(error,data){
+  res.render('view_login/index.html', function(error,data){
+    if(error){
+      console.log(error);
+    }
+    else{
+      res.writeHead(200, {'Content-Type':'text/html'});
+      res.end(data);
+    }
+  });
+});
+
+app.get('/register',function(req, res) {
+  res.render('view_login/view_register.html', function(error,data){
     if(error){
       console.log(error);
     }
