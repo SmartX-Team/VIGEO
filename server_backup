@@ -1,0 +1,237 @@
+
+var express = require('express');
+var app = express();
+var fs = require('fs');
+var bodyParser = require('body-parser');
+var mysql = require('mysql');
+var engines = require('consolidate');
+var path = require('path');
+var nodemailer = require('nodemailer'); //메일 전송을 위한 모듈
+var validator = require('validator'); //입력 형식 검사를 위한 모듈
+var async = require('async');
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'semantic')));
+app.engine('html', engines.mustache);
+app.set('view engine', 'html');
+
+var transporter = nodemailer.createTransport('smtps://mail.varifier2@gmail.com:rnjsrnjs@smtp.gmail.com');
+var rand,host,link,mailOptions;
+
+//DB 접속 정보를 저장
+var dbConnection = mysql.createConnection({
+  host    :'localhost',
+  port : 3306,
+  user : 'root',
+  password : 'inno1029#',
+  database:'member'
+});
+
+dbConnection.connect(function(err){
+if(!err) {
+  console.log("Database is connected ... \n\n");
+}
+else {
+  console.log("Error connecting database ... \n\n");
+}
+});
+
+//3000번 포트의 응답을 처리하도록 설정
+app.listen(3000, function () {
+console.log('Sever listening on port 3000!');
+});
+console.log('Server running');
+
+
+//index page 라우팅
+app.get('/',function(req, res) {
+res.render('view_login/index.html', function(error,data){
+  if(error){
+    console.log(error);
+  }
+  else{
+    res.writeHead(200, {'Content-Type':'text/html'});
+    res.end(data);
+  }
+});
+});
+
+app.get('/verification',function(req, res) {
+res.render('view_login/view_mailverify.html', function(error,data){
+  if(error){
+    console.log(error);
+  }
+  else{
+    res.writeHead(200, {'Content-Type':'text/html'});
+    res.end(data);
+  }
+});
+});
+
+app.get('/register',function(req, res) {
+res.render('view_login/view_register.html', function(error,data){
+  if(error){
+    console.log(error);
+  }
+  else{
+    res.writeHead(200, {'Content-Type':'text/html'});
+    res.end(data);
+  }
+});
+});
+
+//Verification Mail 전송을 위한 라우팅
+app.get('/send',function(req,res){
+   sendVerificationMail(req, res);
+});
+
+var sendVerificationMail = function sendVerificationMail(req, res){
+  rand=Math.floor((Math.random() * 100) + 54);
+  host=req.get('host');
+
+  //메일 설정
+  link="http://"+req.get('host')+"/verify?id="+rand+"&email="+req.query.to;
+  var msg = 'Hello,<br> Please Click on the link to verify your email.<br>';
+  var link_tag = '<a href="' + link + '">Click here to verify </a>';
+  mailOptions = {
+       from: 'Please do not send a reply', // 송신자 주소 설정
+       to: req.query.to, // 수신자를 설정
+       subject: 'Please confirm your Email account', //메일 제목
+       text: 'Hello', // plaintext body
+       html: msg + link_tag // html body
+  };
+  //메일 전송
+ transporter.sendMail(mailOptions, function(error, info){
+ if(error){
+   console.log(error);
+   res.end("error");//메일 전송에 실패하는 경우
+ }
+ else{
+   console.log("Message sent: " + res.message); //메일 전송 성공시
+   res.end("sent");
+ }
+});
+}
+
+
+//전송된 Verification Mail을 클릭했을 때의 동작을 위한 라우팅
+app.get('/verify',function(req,res){
+ console.log(req.protocol+":/"+req.get('host'));
+ console.log(req.query.email);
+  if((req.protocol+"://"+req.get('host'))==("http://"+host))
+    {
+      console.log("Domain is matched. Information is from Authentic email");
+      if(req.query.id==rand)
+      {
+        var input_id = req.query.email;
+
+        dbConnection.query('UPDATE member_info SET user_isverified=1 WHERE user_id= ?',
+        [input_id], function(err,rows){
+          if(err){ //질의에 오류 발생
+            console.log('DB error');
+            console.log(err);
+            console.log('다시 시도해 주세요');
+          }
+          else{
+            console.log("email is verified");
+            res.end("<h1>Email "+mailOptions.to+" is been Successfully verified");
+            }
+        });
+      }
+      else//이메일 인증에 실패한 경우(rand값을 맞추지 못함)
+      {
+        console.log("email is not verified");
+        res.end("<h1>Bad Request</h1>");
+      }
+  }
+ else
+ {
+    res.end("<h1>Request is from unknown source");
+ }
+});
+
+
+
+
+app.post('/register', function(req, res) {
+var input_id = req.body.user_id;
+var input_pw = req.body.user_pw;
+var input_name = req.body.user_name;
+
+if(!validator.isEmail(input_id)){//이메일 형식 검사
+  res.send('<script>alert("잘못된 형식의 이메일입니다");history.back(); </script>');
+}
+
+dbConnection.query('SELECT count(*) AS cnt from member_info where user_id = ?',
+[input_id], function(err,rows){
+  if(err){ //질의에 오류 발생
+    console.log('DB error');
+    console.log(err);
+  }
+  else{
+    var cnt = rows[0].cnt;
+    if(cnt == 1){//아이디가 존재하는 경우
+      res.send('<script>alert("이미 가입된 이메일입니다");history.back(); </script>');
+    }
+  }
+});
+
+console.log(input_id, input_pw, input_name);
+dbConnection.query('INSERT INTO member_info(`user_id`, `user_password`, `user_name`) VALUES (?, password(?), ?)',
+[input_id,input_pw,input_name], function(err,rows){
+  if(err){ //질의에 오류 발생
+    console.log('DB error');
+    console.log(err);
+  }
+  else{
+    console.log('register success');
+    res.send('<script>alert("가입 되었습니다");location.href="/";</script>');
+  }
+});
+});
+
+
+
+app.post('/', function(req, res) {
+var input_id = req.body.user_id;
+var input_pw = req.body.user_pw;
+
+dbConnection.query('SELECT count(*) AS cnt from member_info where user_id = ? and user_password = password(?)',
+[input_id,input_pw], function(err,rows){
+  if(err){ //질의에 오류 발생
+    console.log('DB error');
+    console.log(err);
+  }
+  else{
+    var cnt = rows[0].cnt;
+    console.log(cnt);
+    if(cnt == 1){//로그인이 유효한 경우
+      //console.log('login success');
+
+      //인증된 이메일인지 확인
+      dbConnection.query('SELECT user_isverified AS isVerified from member_info where user_id = ?', [input_id], function(err, result) {
+            if (err) { //질의에 오류 발생
+                console.log('DB error');
+                console.log(err);
+            } else {
+                var isVerified = result[0].isVerified;
+                console.log(isVerified);
+                if (isVerified == 1) { //인증이 완료 된 이메일인 경우
+                    console.log('login succes');
+                    res.send('<script>alert("로그인 되었습니다");</script>');
+                } else { //인증이 완료되지 않은 이메일인 경우
+                    console.log('need verification');
+                    res.send('<script>alert("이메일 인증이 필요합니다");location.href="/verification"; </script>');
+                }
+            }
+        });
+    }
+    else {//로그인이 유효하지 않은 경우
+      console.log('fail to login');
+      res.send('<script>alert("로그인 실패");history.back(); </script>');
+    }
+  }
+});
+console.log(input_id, input_pw);
+});

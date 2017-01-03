@@ -4,10 +4,19 @@
   <meta charset="UTF-8">
   <title>Login Form</title>
 
-  <link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css'>
-  <link rel="stylesheet" href="css/style.css">
+  <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="../../semantic/dist/semantic.min.css">
+  <link rel="stylesheet" type="text/css" href="../../semantic/dist/login.css">
+  <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+  <script src="semantic/dist/semantic.min.js"></script>
 
-  <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+
   <script type="text/javascript">
       $(document).ready(function() {
       	$("#submit").click(function() {
@@ -38,15 +47,27 @@
 </head>
 
 <body>
-    <div class="wrapper">
-    <form class="form-signin" method="post">
-      <h2 class="form-signin-heading">Please login</h2>
-      <input type="text" class="form-control" name="user_id" placeholder="ID" required="" autofocus="" />
-      <input type="password" class="form-control" name="user_pw" placeholder="Password" required=""/>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
-      <CENTER><h3><a href = "/register">Register</a></h3></CENTER>
+  <div class="ui one column center aligned grid">
+<div class="column six wide form-holder">
+  <h2 class="center aligned header form-head">Sign in</h2>
+  <div class="ui form">
+  <form class="form-signin" method="post">
+    <div class="field">
+      <input type="text" name = "user_id" placeholder="Email">
+    </div>
+    <div class="field">
+      <input type="password" name = "user_pw" placeholder="password">
+    </div>
+    <div class="field">
+      <input type="submit" value="sign in" class="ui button large fluid green">
+    </div>
+    <div class="field">
+      <CENTER><h5><a href = "/register">Register</a></h5></CENTER>
+    </div>
     </form>
   </div>
+</div>
+</div>
 
 </body>
 </html>

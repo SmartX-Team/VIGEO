@@ -4,10 +4,18 @@
   <meta charset="UTF-8">
   <title>Registration Form</title>
 
-  <link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css'>
-  <link rel="stylesheet" href="css/style.css">
+  <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="../../semantic/dist/semantic.min.css">
+  <link rel="stylesheet" type="text/css" href="../../semantic/dist/login.css">
+  <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+  <script src="semantic/dist/semantic.min.js"></script>
 
-  <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
   <script type="text/javascript">
       $(document).ready(function() {
       	$("#submit").click(function() {
@@ -15,8 +23,7 @@
       		var form_data = {
       			user_id: $("#user_id").val(),
       			user_pw: $("#user_pw").val(),
-            user_name: $("#user_name").val(),
-            user_email: $("#user_email").val(),
+            user_name: $("#user_name").val()
       			is_ajax: 1
       		};
       		$.ajax({
@@ -41,17 +48,29 @@
 </head>
 
 <body>
-    <div class="wrapper">
-    <form class="form-signin" method="post">
-      <h2 class="form-signin-heading">Registration</h2>
-      <input type="text" class="form-control" name="user_id" placeholder="ID" required="" autofocus="" />
-      <input type="password" class="form-control" name="user_pw" placeholder="Password" required=""/>
-      <input type="text" class="form-control" name="user_name" placeholder="Name" required="" autofocus="" />
-      <input type="text" class="form-control" name="user_email" placeholder="Email" required=""/>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
-      <CENTER><h3><a href = "/">CANCEL</a></h3></CENTER>
+  <div class="ui one column center aligned grid">
+<div class="column six wide form-holder">
+  <h2 class="center aligned header form-head">Sign up</h2>
+  <div class="ui form">
+  <form class="form-signin" method="post">
+    <div class="field">
+      <input type="text" name = "user_id" placeholder="Email" required/>
+    </div>
+    <div class="field">
+      <input type="password" name = "user_pw" placeholder="Password" required/>
+    </div>
+    <div class="field">
+      <input type="text" class="form-control" name="user_name" placeholder="Name" required/>
+    </div>
+    <div class="field">
+      <input type="submit" value="sign up" class="ui button large fluid green" required/>
+    </div>
+    <div>
+      <CENTER><h5><a href = "/">CANCEL</a></h5></CENTER>
+    </div>
     </form>
   </div>
-
+</div>
+</div>
 </body>
 </html>
