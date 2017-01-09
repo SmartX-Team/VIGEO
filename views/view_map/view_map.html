@@ -1,0 +1,226 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Leaflet Map Drawing</title>
+
+    <!-- Leaflet Map import -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+
+    <!-- Leaflet Map jquery import -->
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.0.min.js"></script>
+
+    <!-- Leaflet Map 그리기 도구 import -->
+    <link rel="stylesheet" href="../../src/leaflet.draw.css" />
+
+    <script src="../../src/Leaflet.draw.js"></script>
+    <script src="../../src/Leaflet.Draw.Event.js"></script>
+
+    <script src="../../src/Toolbar.js"></script>
+    <script src="../../src/Tooltip.js"></script>
+
+    <script src="../../src/ext/GeometryUtil.js"></script>
+    <script src="../../src/ext/LatLngUtil.js"></script>
+    <script src="../../src/ext/LineUtil.Intersect.js"></script>
+    <script src="../../src/ext/Polygon.Intersect.js"></script>
+    <script src="../../src/ext/Polyline.Intersect.js"></script>
+    <script src="../../src/ext/TouchEvents.js"></script>
+
+    <script src="../../src/draw/DrawToolbar.js"></script>
+    <script src="../../src/draw/handler/Draw.Feature.js"></script>
+    <script src="../../src/draw/handler/Draw.SimpleShape.js"></script>
+    <script src="../../src/draw/handler/Draw.Polyline.js"></script>
+    <script src="../../src/draw/handler/Draw.Circle.js"></script>
+    <script src="../../src/draw/handler/Draw.Marker.js"></script>
+    <script src="../../src/draw/handler/Draw.Polygon.js"></script>
+    <script src="../../src/draw/handler/Draw.Rectangle.js"></script>
+
+    <script src="../../src/edit/EditToolbar.js"></script>
+    <script src="../../src/edit/handler/EditToolbar.Edit.js"></script>
+    <script src="../../src/edit/handler/EditToolbar.Delete.js"></script>
+
+    <script src="../../src/Control.Draw.js"></script>
+
+    <script src="../../src/edit/handler/Edit.Poly.js"></script>
+    <script src="../../src/edit/handler/Edit.SimpleShape.js"></script>
+    <script src="../../src/edit/handler/Edit.Circle.js"></script>
+    <script src="../../src/edit/handler/Edit.Rectangle.js"></script>
+    <script src="../../src/edit/handler/Edit.Marker.js"></script>
+
+    <!-- semantic ui css -->
+    <link rel="stylesheet" type="text/css" href="../../semantic/dist/semantic.min.css">
+
+
+</head>
+
+<body>
+    <div id="map" style="float: left; width: 80%; height: 1000px; border: 1px solid #AAA;"></div>
+    <div id="search_box" style="margin: 5px; float: left; width: 18%; height: 1000px; solid #AAA; overflow:auto">
+        <div class="ui input focus" id="searchTextField"> <input id="search" type="text" size="30"> <button class="ui primary button" id="btn_search">search</button></div>
+        <div id="test">
+            <table class="ui celled striped table" id="table_id">
+                <tbody id="list_table"></tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <script>
+        var infowindow;
+        var service;
+        var place;
+        var map;
+        var markerItems;
+
+        $(document).ready(function() {
+            $("#btn_search").click(function() {
+                console.log('click');
+                searchLocation();
+            });
+
+            //table을 클릭하였을 때의 이벤트 처리(클릭 된 징소의 위치로 이동한다)
+            $('#table_id').on("click", "tr", function(e) {
+                var rowindex = $(e.currentTarget).index(); //해당 위치의 행 인덱스를
+                var placeName = "" + place[rowindex].name; //동일 인덱스에 위치한 정보를 가져온다
+
+                var placeLocation = "" + place[rowindex].geometry.location; //장소 오브젝트에서 위치를 추출하여 문자열로 casting한다.
+                placeLocation = placeLocation.replace('(', ''); //괄호를 없앤다
+                placeLocation = placeLocation.replace(')', '');
+                var location = placeLocation.split(", "); //경도와 위도를 분리하고 배열로 저장한다.
+                var lat = location[0]; //경도와 위도로 분리하여 저장한다.
+                var lng = location[1];
+                add_marker(placeName, location); //해당 위치에 marker를 추가한다.
+                map.setView(new L.LatLng(lat, lng), 15); //해당 위치로 map의 중심을 변경한다.
+            });
+        });
+
+        //구글 map api에서 요구하는 초기화 함수 함수
+        function initMap() {
+            infowindow = new google.maps.InfoWindow();
+            service = new google.maps.places.PlacesService(document.createElement('div'));
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3zcvL-79eUUGcc72a4UWqUFEj3S8Va9A&libraries=places&callback=initMap">
+    </script>
+    <script>
+
+        //google map 의 textsearch api를 이용한 검색 수행
+        function searchLocation() {
+            var input_query = $("#search").val(); //val attr 등의 구별법 공부할 것
+            var seoul = {
+                lat: 37.556080,
+                lng: 126.992315
+            };
+            service.textSearch({
+                location: seoul,
+                radius: 500000,
+                query: [input_query]
+            }, searchCallback); //질의 완료시 callback함수가 수행된다.
+        }
+
+
+        //google의 응답을 받은 후 수행되는 callback
+        function searchCallback(result, status) {
+            if (status === google.maps.places.PlacesServiceStatus.OK) { //���������� ���� �޾��� ��
+                var resultcontent = '';
+                var list_table = document.getElementById('list_table');
+                var row;
+                var cell;
+
+                $('#list_table').empty(); //table을 초기화한다.
+                for (i = 0; i < result.length; i++) {
+                    row = list_table.insertRow(i); //행을 추가한다.
+                    row.id = i;
+                    cell = row.insertCell(0);
+                    //해당 행에 위치 정보를 출력한다.
+                    resultcontent += '<div><b>' + result[i].name + '</b></div>';
+                    resultcontent += '<div>' + result[i].formatted_address + '</div>';
+                    resultcontent += '<div>' + result[i].geometry.location + '</div>';
+                    cell.innerHTML = resultcontent;
+                    resultcontent = '';
+                }
+                place = result;
+                console.log(resultcontent);
+            } else {
+                window.alert('error');
+            }
+        }
+
+
+        //맵의 초기화 과정을 수행한다.
+        function init_map(focused_location) {
+            var MAXIMUM_ZOOM = 2;
+            var INITIAL_ZOOM = 8;
+
+            //맵의 설정 정보를 입력한다.
+            map = L.map('map', { //id가 map인 div에 맵을 출력한다..
+                center: focused_location, //맵의 초기 위치를 지정
+                minZoom: MAXIMUM_ZOOM,
+                zoom: INITIAL_ZOOM
+            });
+            markerItems = new L.FeatureGroup();
+            return map;
+        }
+
+
+        //지도에 marker를 추가하는 동작을 수행한다
+        //인자 : 위치 이름, 위치 정보(위도 경도를 가진 size2의 문자열 배열)
+        function add_marker(name, marked_location) {
+            markerItems.clearLayers(); //마커를 갱신하기 위해 marker layer의 상태를 초기화한다.
+
+            var marker_name_tag = "<CENTER><B>" + name + "<B></CENTER>"
+            var marker = L.marker(marked_location); //해당 위치의 marker를 정의한다.
+            markerItems.addLayer(marker); //marker를 marker전용 layer에 추가한다.
+            map.addLayer(markerItems); //맵에 marker layer를 추가한다.
+            marker.bindPopup(marker_name_tag).openPopup(); //추가된
+        }
+
+
+        //화면에 map을 그려주는 동작을 수행한다.
+        function add_map(map) {
+            L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                subdomains: ['a', 'b', 'c']
+            }).addTo(map);
+
+            //그려지는 도형들을 위한 drawnItems layer를 생성한다.
+            var drawnItems = new L.FeatureGroup();
+            map.addLayer(drawnItems); //drawnItems Layer를 맵에 추가한다
+
+
+            //draw기능의 속성을 정의한다.
+            var drawControl = new L.Control.Draw({
+                draw: {
+                    polygon: true,
+                    marker: true
+                },
+
+                edit: {
+                    featureGroup: drawnItems
+                }
+            });
+
+            //맵에 Toolbar를 추가한다.
+            map.addControl(drawControl);
+            map.on('draw:created', function(e) {
+                var type = e.layerType,
+                    layer = e.layer;
+                drawnItems.addLayer(layer);
+            });
+        }
+
+        //map을 그려주는 전반적인 workflow를 관리한다.
+        function draw_map() {
+            var MY_COMPANY_LOACTION = [37.531056, 126.921686];
+            map = init_map(MY_COMPANY_LOACTION); //맵의 정보를 초기화
+            add_map(map); //맵을 그려준다.
+            //google.maps.event.addDomListener(window, 'load', init);
+        }
+        draw_map();
+    </script>
+</body>
+</html>
