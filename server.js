@@ -138,28 +138,29 @@ app.post('/', function(req, res) {
 });
 
 app.post('/usermapdata', function(req, res) {
-    var userID = req.session.user;
-
-    dbConnection.query('SELECT user_mapdata from member_info where user_id = ?', [userID], function(err, rows) {
-        if (err) { //질의에 오류 발생
-            console.log(err)
-            callback('DB error', 'fail');
-        } else {
-            var mapData = rows[0];
-            // console.log('result');
-            // console.log(JSON.stringify(mapData));
-            if (!mapData) {
-                console.log(error);
-            } else {
-                console.log('hi');
-                res.writeHead(200, {
-                    'Content-Type': 'application/json'
-                });
-                res.end(JSON.stringify(mapData));
-            }
-        }
-    });
+  sendUserMapdata(req, res);
 });
+
+function sendUserMapdata(req, res){
+  var userID = req.session.user;
+  dbConnection.query('SELECT user_mapdata from member_info where user_id = ?', [userID], function(err, rows) {
+      if (err) { //질의에 오류 발생
+          console.log(err)
+          callback('DB error', 'fail');
+      } else {
+          var mapData = rows[0];
+          if (!mapData) {
+              console.log(error);
+          } else {
+              console.log('hi');
+              res.writeHead(200, {
+                  'Content-Type': 'application/json'
+              });
+              res.end(JSON.stringify(mapData));
+          }
+      }
+  });
+}
 
 
 //사용자 메일 인증 page 라우팅 (인증할 메일을 입력할 수 있는 page)
@@ -260,8 +261,6 @@ function uploadImage(req, res) {
 
 //사용자의 이메일 인증요청을 처리하는 함수
 var verifyMail = function verifyMail(req, res) {
-    console.log(req.protocol + ":/" + req.get('host'));
-    console.log(req.query.email);
     if ((req.protocol + "://" + req.get('host')) == ("http://" + host)) //domain이 일치하지 않는 경우
     {
         console.log("Domain is matched. Information is from Authentic email");

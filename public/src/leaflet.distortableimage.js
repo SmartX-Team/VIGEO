@@ -2,7 +2,7 @@ L.DomUtil = L.extend(L.DomUtil, {
 	getMatrixString: function(m) {
 		var is3d = L.Browser.webkit3d || L.Browser.gecko3d || L.Browser.ie3d,
 
-			/* 
+			/*
 		     * Since matrix3d takes a 4*4 matrix, we add in an empty row and column, which act as the identity on the z-axis.
 		     * See:
 		     *     http://franklinta.com/2014/09/08/computing-css-matrix3d-transforms/
@@ -28,7 +28,7 @@ L.DomUtil = L.extend(L.DomUtil, {
 		var is3d = L.Browser.webkit3d || L.Browser.gecko3d || L.Browser.ie3d,
 			open = 'rotate' + (is3d ? '3d' : '') + '(',
 			rotateString = (is3d ? '0, 0, 1, ' : '') + angle + units;
-			
+
 		return open + rotateString + ')';
 	}
 });
@@ -43,7 +43,7 @@ L.Map.include({
 L.MatrixUtil = {
 
 	// Compute the adjugate of m
-	adj: function(m) { 
+	adj: function(m) {
 		return [
 			m[4]*m[8]-m[5]*m[7], m[2]*m[7]-m[1]*m[8], m[1]*m[5]-m[2]*m[4],
 			m[5]*m[6]-m[3]*m[8], m[0]*m[8]-m[2]*m[6], m[2]*m[3]-m[0]*m[5],
@@ -52,7 +52,7 @@ L.MatrixUtil = {
 	},
 
 	// multiply two 3*3 matrices
-	multmm: function(a, b) { 
+	multmm: function(a, b) {
 		var c = [],
 			i;
 
@@ -69,7 +69,7 @@ L.MatrixUtil = {
 	},
 
 	// multiply a 3*3 matrix and a 3-vector
-	multmv: function(m, v) { 
+	multmv: function(m, v) {
 		return [
 			m[0]*v[0] + m[1]*v[1] + m[2]*v[2],
 			m[3]*v[0] + m[4]*v[1] + m[5]*v[2],
@@ -119,8 +119,8 @@ L.MatrixUtil = {
 			d = L.MatrixUtil.basisToPoints(x1d, y1d, x2d, y2d, x3d, y3d, x4d, y4d),
 			m = L.MatrixUtil.multmm(d, L.MatrixUtil.adj(s));
 
-		/* 
-		 *	Normalize to the unique matrix with m[8] == 1. 
+		/*
+		 *	Normalize to the unique matrix with m[8] == 1.
 		 * 	See: http://franklinta.com/2014/09/08/computing-css-matrix3d-transforms/
 		 */
 		return L.MatrixUtil.multsm(1/m[8], m);
@@ -200,8 +200,8 @@ L.EditHandle = L.Marker.extend({
 L.LockHandle = L.EditHandle.extend({
 	options: {
 		TYPE: 'lock',
-		icon: new L.Icon({ 
-			iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA3ElEQVR4nM3TMU4CQRSH8d8qJ6AgFia2xksYkj0AhVa2JhRGbfEENJyA3oIjUHkFG42tHUE08QAGC8YwjG8LQsOrdnfm+/Y/7+1WdV3bpQ52ogPBJW6CfUcY4aRcaGXX1xijwjEeMvgJp7jAOd6jBKMEwwDDApYS3DYdoY+f7H6AlwyGt/SiUDDBVSFpF3AXsybBn+TO//qK4EjQEU+hjfvg+YagY9Wws2ijdWMbBdMCfk1pysZuJMy/g48C7mKOTzziEEssmhL0UornDGY9nW+rUU9yQbV3P9PW9QuPNylUonujQAAAAABJRU5ErkJggg%3D%3D',
+		icon: new L.Icon({
+			iconUrl: 'EU+hjfvg+YagY9Wws2ijdWMbBdMCfk1pysZuJMy/g48C7mKOTzziEEssmhL0UornDGY9nW+rUU9yQbV3P9PW9QuPNylUonujQAAAAABJRU5ErkJggg%3D%3D',
 			iconSize: [16, 16],
 			iconAnchor: [8, 8]}
 		)
@@ -241,7 +241,7 @@ L.DistortHandle = L.EditHandle.extend({
 L.RotateHandle = L.EditHandle.extend({
 	options: {
 		TYPE: 'rotate',
-		icon: new L.Icon({ 
+		icon: new L.Icon({
 			iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABG0lEQVR4nKXSvS5EURTF8d8V/SBBr9F7A4zGNy9AQytRKIaCgkQhehrzAmZ8hUI8wYxHmJ7CjCcYxT0nublmJlecZueerPXf69y9k0a57D9nqMfdJI7QRBtfaKCC8bw4ySVYww1G+jRsYwsPvRKsohbMT5jHKMawgOfwfYeVPGACVSQ4xDLe0AldX7GI46CpxudEwE7o/IizPvHhBC8hyU4WsBnq5QBzPBdZTwRMhfpeANDMeiIgCbVbABA1SRbQCnWmACBqWllALdS9AoD9rCcCrvAtXaSDAeYKlqTjvc4CPqQb1sU56phFSTreOen2nQbNdvD8WuV16SqX+iTohEb38WI4J6hjGrvYkI6qK/1htyH2Z9aQT/Dn8wMV5jnxJDAcbAAAAABJRU5ErkJggg%3D%3D',
 			iconSize: [16, 16],
 			iconAnchor: [8, 8]}
@@ -331,32 +331,32 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
 		/* End copied from L.ImageOverlay */
 
 		/* Use provided corners if available */
-		if (this.options.corners) { 
-			this._corners = this.options.corners; 
+		if (this.options.corners) {
+			this._corners = this.options.corners;
 			if (map.options.zoomAnimation && L.Browser.any3d) {
 				map.on('zoomanim', this._animateZoom, this);
 			}
 
-			/* This reset happens before image load; it allows 
-			 * us to place the image on the map earlier with 
+			/* This reset happens before image load; it allows
+			 * us to place the image on the map earlier with
 			 * "guessed" dimensions. */
 			this._reset();
 		}
 
-		/* Have to wait for the image to load because 
+		/* Have to wait for the image to load because
 		 * we need to access its width and height. */
 		L.DomEvent.on(this._image, 'load', function() {
 			this._initImageDimensions();
 			this._reset();
 			/* Initialize default corners if not already set */
-			if (!this._corners) { 
+			if (!this._corners) {
 				if (map.options.zoomAnimation && L.Browser.any3d) {
 					map.on('zoomanim', this._animateZoom, this);
 				}
 			}
-		}, this);		
+		}, this);
 
-		this.fire('add');	
+		this.fire('add');
 	},
 
 	onRemove: function(map) {
@@ -450,7 +450,7 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
 
 	/*
 	 * Calculates the transform string that will be correct *at the end* of zooming.
-	 * Leaflet then generates a CSS3 animation between the current transform and 
+	 * Leaflet then generates a CSS3 animation between the current transform and
 	 *		 future transform which makes the transition appear smooth.
 	 */
 	_animateZoom: function(event) {
@@ -459,16 +459,16 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
 			latLngToNewLayerPoint = function(latlng) {
 				return map._latLngToNewLayerPoint(latlng, event.zoom, event.center);
 			},
-	
+
 			transformMatrix = this._calculateProjectiveTransform(latLngToNewLayerPoint),
 			topLeft = latLngToNewLayerPoint(this._corners[0]),
-	
+
 			warp = L.DomUtil.getMatrixString(transformMatrix),
 			translation = L.DomUtil.getTranslateString(topLeft);
-	
+
 		/* See L.DomUtil.setPosition. Mainly for the purposes of L.Draggable. */
 		image._leaflet_pos = topLeft;
-	
+
 		if (!L.Browser.gecko) {
 			image.style[L.DomUtil.TRANSFORM] = [translation, warp].join(' ');
 		}
@@ -498,11 +498,11 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
 	},
 
 	_calculateProjectiveTransform: function(latLngToCartesian) {
-		/* Setting reasonable but made-up image defaults 
-		 * allow us to place images on the map before 
+		/* Setting reasonable but made-up image defaults
+		 * allow us to place images on the map before
 		 * they've finished downloading. */
 		var offset = latLngToCartesian(this._corners[0]),
-			w = this._image.offsetWidth || 500, 
+			w = this._image.offsetWidth || 500,
 			h = this._image.offsetHeight || 375,
 			c = [],
 			j;
@@ -510,7 +510,7 @@ L.DistortableImageOverlay = L.ImageOverlay.extend({
 		for (j = 0; j < this._corners.length; j++) {
 			c.push(latLngToCartesian(this._corners[j])._subtract(offset));
 		}
-		
+
 		/*
 		 * This matrix describes the action of the CSS transform on each corner of the image.
 		 * It maps from the coordinate system centered at the upper left corner of the image
@@ -540,10 +540,10 @@ var EditOverlayAction = L.ToolbarAction.extend({
 	}),
 
 	ToggleTransparency = EditOverlayAction.extend({
-		options: { toolbarIcon: { 
+		options: { toolbarIcon: {
 			html: '<span class="fa fa-adjust"></span>',
 			tooltip: 'Toggle Image Transparency',
-			title: 'Toggle Image Transparency'	
+			title: 'Toggle Image Transparency'
 		}},
 
 		addHooks: function() {
@@ -555,7 +555,7 @@ var EditOverlayAction = L.ToolbarAction.extend({
 	}),
 
 	ToggleOutline = EditOverlayAction.extend({
-		options: { toolbarIcon: { 
+		options: { toolbarIcon: {
 			html: '<span class="fa fa-square-o"></span>',
 			tooltip: 'Toggle Image Outline',
 			title: 'Toggle Image Outline'
@@ -570,7 +570,7 @@ var EditOverlayAction = L.ToolbarAction.extend({
 	}),
 
 	RemoveOverlay = EditOverlayAction.extend({
-		options: { toolbarIcon: { 
+		options: { toolbarIcon: {
 			html: '<span class="fa fa-trash"></span>',
 			tooltip: 'Delete image',
 			title: 'Delete image'
@@ -589,7 +589,7 @@ var EditOverlayAction = L.ToolbarAction.extend({
 		options: { toolbarIcon: {
 			html: '<span class="fa fa-lock"></span>',
 			tooltip: 'Lock / Unlock editing',
-			title: 'Lock / Unlock editing'			
+			title: 'Lock / Unlock editing'
 		}},
 
 		addHooks: function() {
@@ -608,7 +608,7 @@ var EditOverlayAction = L.ToolbarAction.extend({
 			options.toolbarIcon = {
 				html: '<span class="fa fa-' + icon + '"></span>',
 				tooltip: 'Rotate',
-				title: 'Rotate'	
+				title: 'Rotate'
 			};
 
 			EditOverlayAction.prototype.initialize.call(this, map, overlay, options);
@@ -693,9 +693,9 @@ L.DistortableImage.Edit = L.Handler.extend({
 			this._rotateHandles.addLayer(new L.RotateHandle(overlay, i));
 		}
 
-		this._handles = { 
-			'lock':		 this._lockHandles, 
-			'distort': this._distortHandles, 
+		this._handles = {
+			'lock':		 this._lockHandles,
+			'distort': this._distortHandles,
 			'rotate':	this._rotateHandles
 		};
 
@@ -783,9 +783,9 @@ L.DistortableImage.Edit = L.Handler.extend({
 		/* Hide toolbars while dragging; click will re-show it */
 		this.dragging.on('dragstart', this._hideToolbar, this);
 
-		/* 
+		/*
 		 * Adjust default behavior of L.Draggable.
-		 * By default, L.Draggable overwrites the CSS3 distort transform 
+		 * By default, L.Draggable overwrites the CSS3 distort transform
 		 * that we want when it calls L.DomUtil.setPosition.
 		 */
 		this.dragging._updatePosition = function() {
@@ -812,7 +812,7 @@ L.DistortableImage.Edit = L.Handler.extend({
 		if (handlerName !== undefined) {
 			this[handlerName].call(this);
 		}
-	},	
+	},
 
 	_toggleRotateDistort: function() {
 		var map = this._overlay._map;
@@ -856,8 +856,8 @@ L.DistortableImage.Edit = L.Handler.extend({
 
 		map.removeLayer(this._handles[this._mode]);
 		/* Switch mode. */
-		if (this._mode === 'lock') { 
-			this._mode = 'distort'; 
+		if (this._mode === 'lock') {
+			this._mode = 'distort';
 			this._enableDragging();
 		} else {
 			this._mode = 'lock';
@@ -882,7 +882,7 @@ L.DistortableImage.Edit = L.Handler.extend({
 
 		/* Ensure that there is only ever one toolbar attached to each image. */
 		this._hideToolbar();
-		
+
 		var point;
 		if (event.containerPoint) { point = event.containerPoint; }
 		else { point = event.target._dragStartTarget._leaflet_pos; }
@@ -919,5 +919,5 @@ L.DistortableImageOverlay.addInitHook(function() {
 
 	this.on('remove', function () {
 		if (this.editing) { this.editing.disable(); }
-	});	
+	});
 });
