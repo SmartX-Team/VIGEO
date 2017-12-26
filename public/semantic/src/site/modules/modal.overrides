@@ -1,3 +1,39 @@
 /*******************************
          Site Overrides
 *******************************/
+/* Extra Small */
+.ui.xsmall.modal > .header:not(.ui) {
+  font-size: @xsmallHeaderSize;
+}
+
+/* Extra Small Modal Width */
+@media only screen and (max-width : @largestMobileScreen) {
+  .ui.xsmall.modal {
+    width: @xsmallMobileWidth;
+    margin: @xsmallMobileMargin;
+  }
+}
+@media only screen and (min-width : @tabletBreakpoint) {
+  .ui.xsmall.modal {
+    width: @xsmallTabletWidth;
+    margin: @xsmallTabletMargin;
+  }
+}
+@media only screen and (min-width : @computerBreakpoint) {
+  .ui.xsmall.modal {
+    width: @xsmallComputerWidth;
+    margin: @xsmallComputerMargin;
+  }
+}
+@media only screen and (min-width : @largeMonitorBreakpoint) {
+  .ui.xsmall.modal {
+    width: @xsmallLargeMonitorWidth;
+    margin: @xsmallLargeMonitorMargin;
+  }
+}
+@media only screen and (min-width : @widescreenMonitorBreakpoint) {
+  .ui.xsmall.modal {
+    width: @xsmallWidescreenMonitorWidth;
+    margin: @xsmallWidescreenMonitorMargin;
+  }
+}

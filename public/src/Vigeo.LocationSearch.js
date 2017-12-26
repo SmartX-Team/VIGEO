@@ -53,6 +53,9 @@ Vigeo.LocationSearch = {
                 cell.innerHTML = resultcontent;
                 resultcontent = '';
             }
+            $('.ui.sidebar').sidebar('setting', 'transition', 'overlay');
+            $('.ui.sidebar').sidebar('setting', 'dimPage', false);
+            $('.ui.sidebar').sidebar('toggle');
         } else {
             window.alert('error');
         }

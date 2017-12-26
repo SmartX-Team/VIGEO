@@ -12,34 +12,39 @@
   src="https://code.jquery.com/jquery-3.1.1.min.js"
   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
   crossorigin="anonymous"></script>
-<script src="semantic/dist/semantic.min.js"></script>
+  <script src="semantic/dist/semantic.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Oswald:700" rel="stylesheet">
+  <script src="semantic/dist/semantic.min.js"></script>
 
 
-<script>
- $(document).ready(function(){
-     var from,to,subject,text;
-     $("#send_email").click(function(){
-         to=$("#to").val();
-         $("#message").text("Sending E-mail...Please wait");
-         $.get("/send",{to:to},function(data){
-         if(data=="sent")
-         {
-             $("#message").empty().html("<p>Email is been sent at "+to+" . Please check inbox !</p>");
-         }
- });
-     });
- });
-</script>
+  <script>
+      $(document).ready(function(){
+          var from,to,subject,text;
+          $("#send_email").click(function(){
+              to=$("#to").val();
+              $("#message").html("<h4 style='color: white'>Sending E-mail...Please wait</h4>");
+              $.get("/send",{to:to},function(data){
+                  if(data=="sent")
+                  {
+                      $("#message").empty().html("<h4 style='color: white'>Email is been sent at ["+to+"]<br> Please check inbox !</h4>");
+                  }
+              });
+          });
+      });
+  </script>
+
+
 </head>
 <body>
-
+<div style="margin-top: 17%; width: 100%; font-size:10em; color: white; background: rgba(0, 0, 0, 0.10);"><center>VIGEO</center></div>
+<div style="margin-top: 5%; width: 100%; font-size:1.5em; color: white;"><center>GEOgraphic information data VIsualization tool</center></div>
 <div class="ui one column center aligned grid">
-<div class="column six wide form-holder">
+  <div class="column three wide form-holder">
   <h2 class="center aligned header form-head">Email verification</h2>
 
   <div class="ui form">
     <div class="field">
-      <input type="text" id="to" placeholder="Enter E-mail which you want to verify" required/>
+      <input type="text" id="to" placeholder="Enter E-mail" required/>
     </div>
     <div class="field">
       <button class="ui button large fluid green" id="send_email">Send Email</button>
@@ -48,7 +53,7 @@
       <span id="message"></span>
     </div>
     <div>
-      <CENTER><h5><a href = "/">CANCEL</a></h5></CENTER>
+      <CENTER><h5><a href = "/">HOME</a></h5></CENTER>
     </div>
   </div>
 </div>

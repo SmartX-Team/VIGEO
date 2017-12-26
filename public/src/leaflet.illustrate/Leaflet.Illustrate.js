@@ -10,7 +10,7 @@ if (L.DomUtil) {
 		var is3d = L.Browser.webkit3d,
 			open = 'rotate' + (is3d ? '3d' : '') + '(',
 			rotateString = (is3d ? '0, 0, 1, ' : '') + angle + units;
-			
+
 		return open + rotateString + ')';
 	};
 }
@@ -60,7 +60,7 @@ L.RotatableMarker = L.Marker.extend({
 
 	setRotation: function(theta) {
 		this._rotation = theta;
-		
+
 		this.update();
 		this.fire('rotate', { rotation: this._rotation });
 
@@ -247,7 +247,7 @@ L.Illustrate.Pointer = L.Illustrate.Pointer.extend({
 
 		this._pathRoot.style[L.DomUtil.TRANSFORM] =
 			L.DomUtil.getTranslateString(this._pathViewport.min.add(offset));
-		
+
 		this._pathZooming = true;
 	},
 
@@ -356,7 +356,7 @@ L.Illustrate.Textbox = L.RotatableMarker.extend({
 
 		this._textContent = this.options.textContent;
 		this._minSize = this.options.minSize;
-		
+
 		this.setSize(this.options.size || this._minSize);
 	},
 
@@ -634,8 +634,8 @@ L.Illustrate.Create.Textbox = L.Draw.Rectangle.extend({
 		this.options.textOptions = L.extend({}, this.options.textOptions, options);
 		this._setShapeOptions();
 
-		/* 
-		 * A <textarea> element can only be drawn from upper-left to lower-right. 
+		/*
+		 * A <textarea> element can only be drawn from upper-left to lower-right.
 		 * Implement drawing using L.Draw.Rectangle so that a textbox can be drawn in any direction,
 		 * then return a L.Illustrate.Textbox instance once drawing is complete.
 		 */
@@ -976,7 +976,7 @@ L.Illustrate.EditHandle = L.RotatableMarker.extend({
 
 		return map.layerPointToLatLng(this._textboxCoordsToLayerPoint(coord, opt));
 	}
-	
+
 });
 L.Illustrate.MoveHandle = L.Illustrate.EditHandle.extend({
 	options: {

@@ -217,7 +217,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		maxGuideLineLength: 4000,
 		shapeOptions: {
 			stroke: true,
-			color: '#f06eaa',
+			color: '#3485ff',
 			weight: 4,
 			opacity: 0.5,
 			fill: false,
@@ -691,7 +691,7 @@ L.Draw.Polygon = L.Draw.Polyline.extend({
 		showArea: false,
 		shapeOptions: {
 			stroke: true,
-			color: '#f06eaa',
+			color: '#3485ff',
 			weight: 4,
 			opacity: 0.5,
 			fill: true,
@@ -895,7 +895,7 @@ L.Draw.Rectangle = L.Draw.SimpleShape.extend({
 	options: {
 		shapeOptions: {
 			stroke: true,
-			color: '#f06eaa',
+			color: '#3485ff',
 			weight: 4,
 			opacity: 0.5,
 			fill: true,
@@ -956,7 +956,7 @@ L.Draw.Circle = L.Draw.SimpleShape.extend({
 	options: {
 		shapeOptions: {
 			stroke: true,
-			color: '#f06eaa',
+			color: '#3485ff',
 			weight: 4,
 			opacity: 0.5,
 			fill: true,
@@ -3065,7 +3065,7 @@ L.EditToolbar = L.Mixin.DrawToolbar.extend({
 				dashArray: '10, 10',
 
 				fill: true,
-				fillColor: '#fe57a1',
+				fillColor: '#3485ff',
 				fillOpacity: 0.1,
 
 				// Whether to user the existing layers color

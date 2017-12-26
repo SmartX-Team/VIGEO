@@ -1,28 +1,38 @@
 body {
-    background: url('https://ununsplash.imgix.net/uploads/141362941583982a7e0fc/abcfbca1?q=75&fm=jpg&s=5266baf09e0e878b72b2e34adf2f54a0') fixed;
+    background: url('/img/intro-bg7.jpg') fixed;
     background-size: cover;
+    font-family: 'Oswald', sans-serif;
     padding: 0;
     margin: 0;
-  }
+    height: auto;
+}
 
-  .form-holder {
-    background: rgba(255,255,255,0.2);
+.header-holder {
+    background: rgba(0, 0, 0, 0.4);
     margin-top: 10%;
     border-radius: 3px;
-  }
+}
 
-  .form-head {
-    font-size: 30px;
+.form-holder {
+    background: rgba(0, 0, 0, 0.3);
+    margin-top: 2%;
+    font-family: 'Oswald', sans-serif;
+    border-radius: 3px;
+}
+
+.form-head {
+    font-size: 20px;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: #FFF;
     text-shadow: 0 0 30px #000;
     margin: 15px auto 30px auto;
-  }
+}
 
-  .remember-me {
+.remember-me {
     text-align: left;
-  }
-  .ui.checkbox label {
+}
+
+.ui.checkbox label {
     color: #ddd;
-  }
+}

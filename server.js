@@ -17,7 +17,7 @@ var cookieParser = require('cookie-parser'); //쿠키를 parsing하기 위한 �
 //서버 설정을 포함한 환경변수를 laod한다.
 require('dotenv').config({
     path: './config/.env.server'
-});;
+});
 
 
 app.use(bodyParser.urlencoded({
@@ -84,9 +84,23 @@ app.get('/', function(req, res) {
     });
 });
 
-app.get('/map', function(req, res) {
+app.get('/map_view', function(req, res) {
     checkAuth(req, res);
-    res.render('view_map/view_map.html', function(error, data) {
+    res.render('view_map/view_mapview.html', function(error, data) {
+        if (error) {
+            console.log(error);
+        } else {
+            res.writeHead(200, {
+                'Content-Type': 'text/html'
+            });
+            res.end(data);
+        }
+    });
+});
+
+app.get('/map_edit', function(req, res) {
+    checkAuth(req, res);
+    res.render('view_map/view_mapedit.html', function(error, data) {
         if (error) {
             console.log(error);
         } else {
@@ -138,25 +152,105 @@ app.post('/', function(req, res) {
 });
 
 app.post('/usermapdata', function(req, res) {
-  sendUserMapdata(req, res);
+    sendUserMapData(req, res);
 });
 
-function sendUserMapdata(req, res){
+app.post('/getUserMapList', function(req, res) {
+    sendUserMapList(req, res);
+});
+app.post('/deleteMapData', function(req, res) {
+    deleteUserMapData(req, res);
+});
+app.post('/logout', function(req, res) {
+    logoutProcess(req, res);
+});
+app.post('/addUserMap', function(req, res) {
+    addNewUserMap(req, res);
+});
+
+function deleteUserMapData(req, res){
+    var userID = req.session.user;
+    var mapID = req.body.id;
+    console.log(mapID);
+    dbConnection.query('DELETE from map_list where map_owner = ? AND map_id = ?', [userID, mapID], function(err, rows) {
+        if (err) { //질의에 오류 발생
+            console.log(err)
+            //callback('DB error', 'fail');
+        }
+        else {
+            res.end(JSON.stringify({message: 'deleteSuccess'}));
+        }
+    });
+}
+
+function addNewUserMap(req, res){
+
+    var userID = req.session.user;
+    var mapName = String(JSON.stringify(req.body.mapName).replace(/\"/g, ""));
+    console.log(mapName);
+    var madData = JSON.stringify({});
+    dbConnection.query('INSERT INTO map_list(`map_owner`, `map_name`, `map_data`) VALUES (?, ?, ?)', [userID, mapName, madData], function(err, rows) {
+        if (err) { //insert 실패시
+            console.log('DB error2');
+            console.log(err);
+        } else {
+            console.log('register success'); //DB에 등록이 완료 됨.
+            res.end(JSON.stringify({message: 'addMapSuccess'}));
+        }
+    });
+}
+
+function logoutProcess(req, res){
+    req.session.user = null;
+    res.writeHead(200, {
+        'Content-Type': 'application/json'
+    });
+    res.end(JSON.stringify({message : "logoutSuccess"}));
+}
+
+function sendUserMapList(req, res){
+    var userID = req.session.user;
+    dbConnection.query('SELECT map_name, map_id, map_data from map_list where map_owner = ? ORDER BY map_id', [userID], function(err, rows) {
+        if (err) { //질의에 오류 발생
+            console.log(err)
+            //callback('DB error', 'fail');
+        } else {
+            var mapList = rows;
+            if (!mapList) {
+                console.log(error);
+            } else {
+                //console.log(mapList);
+                res.writeHead(200, {
+                    'Content-Type': 'application/json'
+                });
+                res.end(JSON.stringify(mapList));
+            }
+        }
+    });
+}
+
+function sendUserMapData(req, res){
   var userID = req.session.user;
-  dbConnection.query('SELECT user_mapdata from member_info where user_id = ?', [userID], function(err, rows) {
+  var mapID = req.body.id;
+  dbConnection.query('SELECT map_id, map_name, map_data from map_list where map_id = ?', [mapID], function(err, rows) {
       if (err) { //질의에 오류 발생
           console.log(err)
-          callback('DB error', 'fail');
       } else {
           var mapData = rows[0];
+
           if (!mapData) {
               console.log(error);
           } else {
-              console.log('hi');
+              var responseMapData = {
+                  mapID : mapData.map_id,
+                  mapName : mapData.map_name,
+                  mapData : mapData.map_data
+              };
+              console.log(responseMapData);
               res.writeHead(200, {
                   'Content-Type': 'application/json'
               });
-              res.end(JSON.stringify(mapData));
+              res.end(JSON.stringify(responseMapData));
           }
       }
   });
@@ -211,17 +305,38 @@ app.post('/register', function(req, res) {
     registerMember(req, res);
 });
 
-app.post('/save', function(req, res) {
+app.post('/saveUserMap', function(req, res) {
     storeUserMapData(req, res);
+});
+
+app.post('/getAccountInfo', function (req, res) {
+    var userID = req.session.user;
+    dbConnection.query('SELECT user_name, user_id FROM member_info WHERE user_id = ?', [userID], function (err, rows) {
+        if (err) { //질의에 오류 발생
+            console.log(err)
+            //callback('DB error', 'fail');
+        } else {
+            var result = rows[0];
+            var userInfo = {
+                name: result.user_name,
+                id : result.user_id
+            }
+            res.writeHead(200, {
+                'Content-Type': 'application/json'
+            });
+            res.end(JSON.stringify(userInfo));
+        }
+    });
 });
 
 function storeUserMapData(req, res) {
     console.log('request =' + JSON.stringify(req.body));
-    var mapJsonData = JSON.stringify(req.body);
+    var mapJsonData = JSON.stringify(req.body.mapData);
+    var mapID = JSON.stringify(req.body.mapID);
     var user_id = req.session.user;
 
     //DB에 map data(geoJSON)을 저장
-    dbConnection.query('UPDATE member_info SET user_mapdata=? WHERE user_id= ?', [mapJsonData, user_id], function(err, rows) {
+    dbConnection.query('UPDATE map_list SET map_data=? WHERE map_id= ? AND map_owner = ?', [mapJsonData, mapID, user_id], function(err, rows) {
         if (err) { //질의에 오류 발생
             console.log('DB error');
             console.log(err);
@@ -241,9 +356,16 @@ function uploadImage(req, res) {
         return;
     }
 
+    // const screenshot = require('screenshot-stream');
+    //
+    // const stream = screenshot('http://naver.com', '1024x768', {crop: true});
+    //
+    // stream.pipe(fs.createWriteStream(__dirname + process.env.PATH_UPLOADED_IMG + 'google.com-1024x768.png'));
+
     //파일 형식 검사 처리 해야함
     var filePath = __dirname + process.env.PATH_UPLOADED_IMG + req.files.file_picker_hidden.name;
     var imgURL = "http://172.16.10.66:3000/static/uploaded/img/" + req.files.file_picker_hidden.name;
+    //var imgURL = "http://172.16.10.66:3000/static/uploaded/img/" + 'google.com-1024x768.png';
     console.log(filePath);
     uploadedImage = req.files.file_picker_hidden;
     console.log(req.files.file_picker_hidden);
@@ -330,7 +452,7 @@ var loginProcess = function loginProcess(req, res) {
         function(callback) {
             dbConnection.query('SELECT count(*) AS cnt from member_info where user_id = ? and user_password = password(?)', [input_id, input_pw], function(err, rows) {
                 if (err) { //질의에 오류 발생
-                    console.log(err)
+                    console.log(err);
                     callback('DB error', 'fail');
                 } else {
                     var cnt = rows[0].cnt;
@@ -356,9 +478,12 @@ var loginProcess = function loginProcess(req, res) {
                     console.log(isVerified);
                     if (isVerified == 1) { //인증이 완료 된 이메일인 경우
                         req.session.user = input_id;
-                        //  dbConnection.release();
+                        //
                         console.log('로그인 성공');
-                        res.send('<script>alert("로그인 되었습니다");location.href="/map";</script>');
+                        res.writeHead(200, {
+                            'Content-Type': 'application/json'
+                        });
+                        res.end(JSON.stringify({message : "success"}));
                     } else { //인증이 완료되지 않은 이메일인 경우
                         callback(new Error('needEmailVerification'), 'fail');
                     }
@@ -372,11 +497,19 @@ var loginProcess = function loginProcess(req, res) {
         //dbConnection.release();
         if (err.message == 'failToLogin') {
             console.log(err.message);
-            res.send('<script>alert("아이디와 비밀번호를 확인하세요");history.back(); </script>');
+            //res.send('<script>alert("아이디와 비밀번호를 확인하세요");history.back(); </script>');
+            res.writeHead(200, {
+                'Content-Type': 'application/json'
+            });
+            res.end(JSON.stringify({message : "failToLogin"}));
         }
         if (err.message == 'needEmailVerification') {
             console.log(err.message);
-            res.send('<script>alert("이메일 인증이 필요합니다");location.href="/verification"; </script>');
+            //res.send('<script>alert("이메일 인증이 필요합니다");location.href="/verification"; </script>');
+            res.writeHead(200, {
+                'Content-Type': 'application/json'
+            });
+            res.end(JSON.stringify({message : "needEmailVerification"}));
         }
     });
     console.log(input_id, input_pw);
@@ -442,61 +575,3 @@ var registerMember = function registerMember(req, res) {
         }
     });
 };
-
-
-//callback 함수 제어 연습 코드
-/*
-var registerMember = function registerMember(req, res){
-  async.waterfall(
-    [
-      function(callback){
-        var input_id = req.body.user_id;
-        var input_pw = req.body.user_pw;
-        var input_name = req.body.user_name;
-
-        if(!validator.isEmail(input_id)){//이메일 형식 검사
-          res.send('<script>alert("잘못된 형식의 이메일입니다");history.back(); </script>');
-        }
-
-        callback(null, req, res, input_id, input_pw, input_name);
-      },
-      function(req, res, input_id, input_pw, input_name, callback) {
-        dbConnection.query('SELECT count(*) AS cnt from member_info where user_id = ?',
-        [input_id], function(err,rows){
-          if(err){ //질의에 오류 발생
-            console.log('DB error');
-            console.log(err);
-            callback("DBError", req, res);
-          }
-          else{
-            var cnt = rows[0].cnt;
-            if(cnt == 1){//아이디가 존재하는 경우
-              res.send('<script>alert("이미 가입된 이메일입니다");history.back(); </script>');
-              callback("DuplicatedID", req, res);
-            }
-          }
-        });
-        callback(null, req, res, input_id, input_pw, input_name);
-      },
-      function(req, res, input_id, input_pw, input_name, callback){
-        console.log(input_id, input_pw, input_name);
-        dbConnection.query('INSERT INTO member_info(`user_id`, `user_password`, `user_name`) VALUES (?, password(?), ?)',
-        [input_id,input_pw,input_name], function(err,rows){
-          if(err){ //질의에 오류 발생
-            console.log('DB error');
-            console.log(err);
-
-          }
-          else{
-            console.log('register success');
-            res.send('<script>alert("가입 되었습니다");location.href="/";</script>');
-          }
-        });
-        }
-    ],
-    function(err, req, res){
-      console.log(err);
-    }
-  )
-}
-*/

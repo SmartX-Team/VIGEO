@@ -1,3 +1,24 @@
 /*******************************
          Site Overrides
 *******************************/
+
+/*----------------------
+    Modal Variations
+----------------------*/
+
+/* Size Widths */
+@xsmallRatio: 0.4;
+
+/* Derived Responsive Sizes */
+@xsmallHeaderSize: 1.3em;
+@xsmallMobileWidth: @mobileWidth;
+@xsmallTabletWidth: (@tabletWidth * @xsmallRatio);
+@xsmallComputerWidth: (@computerWidth * @xsmallRatio);
+@xsmallLargeMonitorWidth: (@largeMonitorWidth * @xsmallRatio);
+@xsmallWidescreenMonitorWidth: (@widescreenMonitorWidth * @xsmallRatio);
+
+@xsmallMobileMargin: 0em 0em 0em -(@xsmallMobileWidth / 2);
+@xsmallTabletMargin: 0em 0em 0em -(@xsmallTabletWidth / 2);
+@xsmallComputerMargin: 0em 0em 0em -(@xsmallComputerWidth / 2);
+@xsmallLargeMonitorMargin: 0em 0em 0em -(@xsmallLargeMonitorWidth / 2);
+@xsmallWidescreenMonitorMargin: 0em 0em 0em -(@xsmallWidescreenMonitorWidth / 2);

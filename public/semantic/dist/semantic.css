@@ -31036,15 +31036,15 @@ select.ui.dropdown {
 
 @media only screen and (min-width: 1200px) {
   .ui.small.modal {
-    width: 720px;
-    margin: 0em 0em 0em -360px;
+    width: 400px;
+    margin: 0em 0em 0em -160px;
   }
 }
 
 @media only screen and (min-width: 1920px) {
   .ui.small.modal {
-    width: 760px;
-    margin: 0em 0em 0em -380px;
+    width: 400px;
+    margin: 0em 0em 0em -160px;
   }
 }
 

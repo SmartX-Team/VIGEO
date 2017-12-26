@@ -7,21 +7,28 @@
     <title>Leaflet Map Drawing</title>
 
     <!-- Leaflet Map jquery import -->
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
 
     <script src="../../src/leaflet-src.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" href="../../src/leaflet.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
-    <script src="../../src/leaflet.toolbar.js"></script>
-    <link href="../../src/leaflet.toolbar.css" rel="stylesheet" />
-    <link href="../../src/font-awesome.min.css" rel="stylesheet" />
+    <!--
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+    -->
 
-    <link rel="stylesheet" href="../../src/leaflet.distortableimage.css" type="text/css" media="screen" title="no title" charset="utf-8">
+    <script src="../../src/leaflet.toolbar.js"></script>
+    <link href="../../src/leaflet.toolbar.css" rel="stylesheet"/>
+    <link href="../../src/font-awesome.min.css" rel="stylesheet"/>
+
+    <link rel="stylesheet" href="../../src/leaflet.distortableimage.css" type="text/css" media="screen" title="no title"
+          charset="utf-8">
     <script src="../../src/leaflet.distortableimage.js"></script>
 
     <script src="../../src/leaflet.draw/Leaflet.draw.js"></script>
-    <link rel="stylesheet" href="src/leaflet.draw/leaflet.draw.css" />
-
+    <link rel="stylesheet" href="src/leaflet.draw/leaflet.draw.css"/>
 
     <!-- map 작성 코드 -->
     <script src="../../src/Vigeo.MapCreator.js"></script>
@@ -32,24 +39,22 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.css">
     <script src="https://unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.js"></script>
 
-    <!-- leaflet illustrate-->
-    <script src="../../src/leaflet.illustrate/Leaflet.Illustrate.js"></script>
-    <link rel="stylesheet" href="src/leaflet.illustrate/Leaflet.Illustrate.css" />
-
     <!-- semantic ui -->
-    <link rel="stylesheet" type="text/css" href="../../semantic3/dist/semantic.min.css">
-    <script src="../../semantic3/dist/semantic.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="../../semantic3/dist/components/sidebar.css">
-    <script src="../../semantic3/dist/components/sidebar.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../semantic/dist/semantic.css">
+    <script src="../../semantic/dist/semantic.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../semantic/dist/components/sidebar.css">
+    <script src="../../semantic/dist/components/sidebar.js"></script>
     <!-- 이미지 추가 버튼에 사용되는 폰트 -->
     <!-- 이미지 추가 버튼에 사용되는 폰트 -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css?family=Oswald:700" rel="stylesheet">
 
     <style>
         {
-            margin: 0px;
-            padding: 0px;
+            margin: 0px
+        ;
+            padding: 0px
+        ;
         }
 
         html,
@@ -60,6 +65,8 @@
 </head>
 
 <body>
+
+</div>
 <div class="ui sidebar vertical right menu">
     <div id="test">
         <table class="ui selectable celled table" id="table_id">
@@ -69,16 +76,27 @@
 </div>
 <!---------------------- Header-------------------------->
 <div class="pusher" style="height : 100%; width : 100%;">
-    <div class="header menu" style="float: top; height: 5%;">
-        <div class="ui stackable menu" style="height: 5%;">
-            <div class="item">
-                <!--
-  <img src="/images/logo.png">
--->
+    <div class="header menu" style="float: top; height: 4%;">
+        <div class="ui stackable menu" style="height: 100%;">
+            <div class="item" style="width: 13%">
+                <div style="width: 20%">
+                    <img class="ui mini image" src="/img/logo/vigeo_logo.PNG">
+                </div>
+                <div style="width: 50%; float : left">
+                    <h3 class="ui header">
+                        VIGEO
+                        <div class="sub small header">For GEO Info</div>
+                    </h3>
+                </div>
+                <div style="width: 30%">
+                    <div class="ui teal label" style="width: 100%">
+                        <CENTER>VIEW</CENTER>
+                    </div>
+                </div>
             </div>
-            <a class="item">Features</a>
-            <a class="item">Testimonials</a>
-            <a class="item">Sign-in</a>
+            <a class="item" id="menu_btn_view">View</a>
+            <a class="item" id="menu_btn_edit">Edit</a>
+            <a class="item" id="menu_btn_logout">Log Out</a>
             <div class="right item">
                 <div class="ui icon input">
                     <input type="text" placeholder="Search..." id="searchTextField">
@@ -88,73 +106,128 @@
         </div>
     </div>
 
-    <!---------------------- Contecnts-------------------------->
-    <div class="content" style="float: down; width: 100%; height: 95%;">
+    <!---------------------- Contents-------------------------->
+    <div class="content" style="float: bottom; width: 100%; height: 96%;">
+        <!-- left menu bar-->
         <div class="ui vertical menu" style="float: left; width: 13%; height: 100%;">
-            <a class="teal item active"> Home
-                <div class="ui teal left pointing label">1</div>
+            <a class="item active">
+                <h1 class="ui teal header" id="profile_name">
+                </h1>
             </a>
-            <a class="item">
+            <a class="item" id="menu_btn_maplist">
                 Map List
                 <div class="ui label">5</div>
             </a>
             <a class="item">
                 Menu 2
-                <div class="ui label">1</div>
             </a>
             <a class="item">
                 Menu 3
-                <div class="ui label">1</div>
             </a>
             <a class="item">
                 Menu 4
-                <div class="ui label">1</div>
             </a>
         </div>
+        <!--map -->
         <div id="map" style="float: right; width: 87%; height: 100%;"></div>
-        <div id="search_box" style="float: down; width: 20%; height: 100%; overflow:auto">
-            <div class="ui input focus" id="searchtexts"> <input id="search2" type="text" size="20"> <button class="ui primary button" id="btn_search">search</button></div>
-
-        </div>
     </div>
 
-    <div style="height: 0%">
-        <form action="/uploadImage" class="imageUpdoadForm" id="imageUpdoadForm" method="post" enctype="multipart/form-data" target="hidden_iframe">
-            <input name="file_picker_hidden" id="file_picker" style="opacity:0; height:0px;width:0px;" type="file" accept="image/*" />
-            <input type="button" name="action" value="Upload" style="opacity:0; height:0px;width:0px;" onclick="redirect()" />
+    <!-- hidden area ------->
+
+    <div style="height: 0%; display:none">
+        <form action="/uploadImage" class="imageUpdoadForm" id="imageUpdoadForm" method="post"
+              enctype="multipart/form-data" target="hidden_iframe">
+            <input name="file_picker_hidden" id="file_picker" style="opacity:0; height:0px;width:0px;" type="file"
+                   accept="image/*"/>
+            <input type="button" name="action" value="Upload" style="opacity:0; height:0px;width:0px;"
+                   onclick="redirect()"/>
         </form>
         <iframe id='hidden_iframe' name='hidden_iframe' src="" style="opacity:0; height:0px;width:0px;"></iframe>
     </div>
+
+    <!-- modal -->
+    <div class="ui xsmall modal" id="mapListModal">
+        <div class="header" id="mapListModalHeader">Map List</div>
+        <div class="content" id="mapListModalContent">
+            <table class="ui selectable celled table" id="mapList_table">
+                <tbody id="mapList_tableBody">
+                <tr class='mapList-clickableRow'>
+                </tbody>
+            </table>
+        </div>
+        <div class="actions">
+            <CENTER>
+                <div class="ui positive large button" style="width: 100%">
+                    CANCEL
+            </CENTER>
+        </div>
+    </div>
+
+    <div class="ui small modal" id="viewMapModal">
+        <div class="header" id="viewMapModalHeader"></div>
+        <div class="content" id="viewMapModalMessage"></div>
+        <div class="actions">
+            <div class="ui positive right labeled icon button">
+                OK
+                <i class="checkmark icon"></i>
+            </div>
+        </div>
+    </div>
     <script>
-
-
 
         var vigeoMapCreator = Vigeo.MapCreator;
         var vigeoLocationSearch = Vigeo.LocationSearch;
         var places;
 
 
-        vigeoMapCreator.createMap();
+        vigeoMapCreator.createMap('EDIT');
 
         var featureGroups = {
-            markerItems : vigeoMapCreator.markerItems,
-            imgItems : vigeoMapCreator.imgItems,
-            drawnItems : vigeoMapCreator.drawnItems
+            markerItems: vigeoMapCreator.markerItems,
+            imgItems: vigeoMapCreator.imgItems,
+            drawnItems: vigeoMapCreator.drawnItems
         };
 
         var map = vigeoMapCreator.vigeoMap;
-
         var vigeoTools = Vigeo.Tools;
+        vigeoTools.getUserInfo();
 
 
+        $(document).ready(function () {
+            $("#menu_btn_maplist").click(function () {
+                vigeoMapCreator.showMapListModal();
+            });
+            $("#menu_btn_view").click(function () {
+                location.href = '/map_view';
+            });
+            $("#menu_btn_edit").click(function () {
+                location.href = '/map_edit';
+            });
+            $("#menu_btn_logout").click(function () {
+                vigeoTools.doLogOut();
+//                var headerTextNode = document.createTextNode('로그 아웃');
+//                var messageTextNode = document.createTextNode('로그아웃 되었습니다');
+//                document.getElementById('viewMapModalHeader').appendChild(headerTextNode);
+//                document.getElementById('viewMapModalMessage').appendChild(messageTextNode);
+//                $('#viewMapModal')
+//                    .modal('setting', 'closable', false)
+//                    .modal('show');
+            });
 
-        $(document).ready(function() {
-            $("#btn_search").click(function() {
+            $(".mapList-clickableRow").click(function () {
+                console.log('click');
+                $('#mapListModal').modal('hide');
+                var rowID = $(this).attr('id');
+                var parseIdNumber = rowID.split('_');
+                var mapDataID = parseIdNumber[1];
+                Vigeo.Tools.getMapData(mapDataID);
+            });
+            $("#btn_search").click(function () {
                 vigeoLocationSearch.searchLocation();
             });
 
             //table을 클릭하였을 때의 이벤트 처리(클릭 된 징소의 위치로 이동한다)
-            $('#table_id').on("click", "tr", function(e) {
+            $('#table_id').on("click", "tr", function (e) {
                 console.log(vigeoLocationSearch);
                 var rowindex = $(e.currentTarget).index(); //해당 위치의 행 인덱스를
                 var placeName = "" + places[rowindex].name; //동일 인덱스에 위치한 정보를 가져온다
@@ -169,21 +242,21 @@
                 map.setView(new L.LatLng(lat, lng), 15); //해당 위치로 map의 중심을 변경한다.
             });
 
-            $("#file_picker").change(function() {
+            $("#file_picker").change(function () {
                 //document.getElementById('imageUpdoadForm').target = 'hidden_iframe';//hidden frame을 이용하여 post submit 수행
                 var SIZE_LIMIT = 2097152;
                 var file_size = document.getElementById('file_picker').files[0].size;
 
                 console.log(document.getElementById('file_picker').files[0].name);
                 if (file_size >= SIZE_LIMIT) {
-                    alert('File too large');
+                    alert('File is too large');
                     return;
                 }
                 console.log('submit');
                 $("#imageUpdoadForm").submit();
             });
 
-            $("#imageUpdoadForm").submit(function(e) {
+            $("#imageUpdoadForm").submit(function (e) {
                 var formObj = $(this);
                 var formURL = formObj.attr("action");
                 var formData = new FormData(this);
@@ -195,29 +268,28 @@
                     contentType: false,
                     cache: false,
                     processData: false,
-                    success: function(imgURL, textStatus, jqXHR) {
+                    success: function (imgURL, textStatus, jqXHR) {
                         //성공시 imageURL을 반환받는다.
+                        console.log('test');
                         vigeoTools.addImage(imgURL);
                     },
-                    error: function(jqXHR, textStatus, errorThrown) {
+                    error: function (jqXHR, textStatus, errorThrown) {
                         //에러시 응답
                     }
                 });
                 e.preventDefault(); //디폴트 액션을 예방
             });
 
-            $("#searchTextField").keydown(function(key) {
+            $("#searchTextField").keydown(function (key) {
                 if (key.keyCode == 13) {
                     vigeoLocationSearch.searchLocation();
-                    $('.ui.sidebar').sidebar('setting', 'transition', 'overlay');
-                    $('.ui.sidebar').sidebar('setting', 'dimPage', false);
-                    $('.ui.sidebar').sidebar('toggle');
                 }
             });
         });
 
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3zcvL-79eUUGcc72a4UWqUFEj3S8Va9A&libraries=places&callback=Vigeo.LocationSearch.initMap"></script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3zcvL-79eUUGcc72a4UWqUFEj3S8Va9A&libraries=places&callback=Vigeo.LocationSearch.initMap"></script>
 </body>
 
 </html>

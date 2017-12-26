@@ -443,13 +443,13 @@
 }
 @media only screen and (min-width: 1200px) {
   .ui.small.modal {
-    width: 720px;
+    width: 400px;
     margin: 0em 0em 0em -360px;
   }
 }
 @media only screen and (min-width: 1920px) {
   .ui.small.modal {
-    width: 760px;
+    width: 400px;
     margin: 0em 0em 0em -380px;
   }
 }
